@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changeRole } from "../features/User";
+import { changeRole, loginUser } from "../features/User";
 import { useRouter } from "next/router";
-import { User, SALT } from "../data/User";
+import { User, SALT } from "../data/Data";
 import bcrypt from "bcryptjs";
 
 export function Login() {
@@ -30,11 +30,16 @@ export function Login() {
     const hashUser = bcrypt.hashSync(data.password, SALT);
     if (data.username === User.username && hashUser === User.password) {
       successLogin();
-    } else setShowFalse(true);
+    } else {
+      setShowFalse(true);
+      setTimeout(() => {
+        setShowFalse(false);
+      }, 3000);
+    }
   };
 
   const successLogin = () => {
-    dispatch(changeRole("admin"));
+    dispatch(loginUser({ role: "admin", name: data.username }));
     router.push("/dashboard");
   };
 
@@ -49,6 +54,7 @@ export function Login() {
           className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
           placeholder="Username"
           onChange={handleOnChange}
+          onKeyDown={(e) => e.key === "Enter" && handleOnLogin()}
         />
       </div>
       {/* Password input */}
@@ -59,6 +65,7 @@ export function Login() {
           className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
           placeholder="Password"
           onChange={handleOnChange}
+          onKeyDown={(e) => e.key === "Enter" && handleOnLogin()}
         />
       </div>
       <div

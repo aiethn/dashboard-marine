@@ -1,8 +1,10 @@
 import Head from "next/head";
+import { useSelector } from "react-redux";
 import Footer from "./Footer";
 import Nav from "./Nav";
 
 export function Layout({ children }) {
+  const getPages = useSelector((state) => state.pages.prime);
   return (
     <>
       <Head>
@@ -10,11 +12,10 @@ export function Layout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="font-poppins">
-        <Nav />
-        <div className="min-h-screen mx-auto flex flex-col pt-10">
-          <main className="flex-grow container mx-auto sm:px-6">
-            {children}
-          </main>
+        {getPages !== "home" && <Nav />}
+
+        <div className="min-h-screen mx-auto flex flex-col">
+          <main className="flex-grow">{children}</main>
           <Footer />
         </div>
       </div>
