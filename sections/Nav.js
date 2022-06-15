@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { WindowSize } from "../middleware/WindowSize";
-import styles from "../styles/Nav.module.css";
 
 export default function Nav() {
   const [scroll, setScroll] = useState(false);
@@ -31,13 +30,6 @@ export default function Nav() {
       <div className="flex justify-center w-full">
         <div className="mx-auto w-full relative">
           <nav className="flex md:justify-between align-center text-center items-center text-xl px-6 py-4">
-            {/* <Link href="/">
-              <a
-                className={`${styles.linkUnderline} px-4 pb-2 font-display max-w-sm font-bold font-poppins leading-tight cursor-pointer`}
-              >
-                MARINE TECH COMPANY
-              </a>
-            </Link> */}
             <Link href="/">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
