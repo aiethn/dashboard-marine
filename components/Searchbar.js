@@ -1,9 +1,9 @@
-export function SearchBar() {
+export function SearchBar({ setQuery }) {
   return (
     <div className="relative w-fit">
       <input
         placeholder="Search Name, Transit Direction"
-        // onChange={(e) => setSearchValue(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         className="block md:w-96 pl-12 pr-4 py-3 text-gray-900 border-0 bg-gray-200 bg-opacity-50 rounded-md  focus:ring-primary-500 focus:border-primary-500 "
         type="text"
       />

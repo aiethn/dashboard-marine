@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeSubPage } from "../features/Pages";
+import { logoutUser } from "../features/User";
+import { useRouter } from "next/router";
 import styles from "../styles/Nav.module.css";
 
 export function MenuDashboard() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [selectedSub, setSelectedSub] = useState("");
   useEffect(() => {
     dispatch(changeSubPage("ship"));
@@ -15,6 +18,12 @@ export function MenuDashboard() {
     dispatch(changeSubPage(value));
     setSelectedSub(value);
   };
+
+  const successLogout = () => {
+    dispatch(logoutUser());
+    router.push("/");
+  };
+
   return (
     <div className="flex flex-col h-full justify-between ">
       <div className="flex flex-col  font-bold text-xl">
@@ -37,7 +46,10 @@ export function MenuDashboard() {
           Shipments
         </p>
       </div>
-      <div className="cursor-pointer flex align-center justify-center items-center space-x-2 mb-10 ">
+      <div
+        onClick={(e) => successLogout()}
+        className="cursor-pointer flex align-center justify-center items-center space-x-2 mb-10 "
+      >
         <svg
           version={1.0}
           xmlns="http://www.w3.org/2000/svg"

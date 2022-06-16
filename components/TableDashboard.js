@@ -4,7 +4,7 @@ import Select from "react-select";
 import { ShipData, ShipmentData } from "../data/Data";
 import { Pagination } from "./Pagination";
 
-export function TableDashboard() {
+export function TableDashboard({ querySearch }) {
   const getSub = useSelector((state) => state.pages.sub);
   const [articleNumber, setArticleNumber] = useState(optionsArticleNumber[0]);
   const [paginationNumber, setPaginationNumber] = useState(1);
@@ -27,14 +27,28 @@ export function TableDashboard() {
       selectedData.length / articleNumber.value
     );
     setTotalPagination(totalAvailablePages);
+
     const newAwal =
       articleNumber.value * paginationNumber - (articleNumber.value - 1);
     const newAkhir = articleNumber.value * paginationNumber;
-    const newData = selectedData.slice(newAwal, newAkhir);
     setCurrentPagination({ awal: newAwal, akhir: newAkhir });
-    setPaginationData(newData);
+
     if (paginationNumber > totalAvailablePages) setPaginationNumber(1);
-  }, [articleNumber, paginationNumber, selectedData]);
+
+    if (!querySearch) {
+      const newData = selectedData.slice(newAwal - 1, newAkhir);
+      setPaginationData(newData);
+    } else {
+      const newData = selectedData.filter((data) => {
+        const searchContent =
+          getSub === "ship"
+            ? data.ship + data.direction
+            : data.truckId + data.productId;
+        return searchContent.toLowerCase().includes(querySearch.toLowerCase());
+      });
+      setPaginationData(newData);
+    }
+  }, [articleNumber, paginationNumber, selectedData, querySearch]);
 
   if (!paginationData) {
     return <div>Loading</div>;
@@ -78,31 +92,38 @@ export function TableDashboard() {
             </div>
           </div>
         </div>
-        <div className="my-10 px-4 flex justify-end">
-          <div className="flex items-center space-x-4">
-            <p>
-              {" "}
-              {currentPagination.awal}-
-              {currentPagination.akhir > selectedData.length
-                ? selectedData.length
-                : currentPagination.akhir}{" "}
-              out of {selectedData.length}
-            </p>
-            <Pagination
-              paginationNumber={paginationNumber}
-              totalPagination={totalPagination}
-              handlePage={(val) => setPaginationNumber(val)}
-            />
-            <Select
-              isSearchable={false}
-              value={articleNumber}
-              defaultValue={optionsArticleNumber[0]}
-              onChange={(e) => setArticleNumber(e)}
-              options={optionsArticleNumber}
-              className="mr-4"
-            />
+        {!querySearch && (
+          <div className="my-10 px-4 flex justify-end">
+            <div className="flex items-center space-x-4">
+              <p>
+                {" "}
+                {currentPagination.awal}-
+                {currentPagination.akhir > selectedData.length
+                  ? selectedData.length
+                  : currentPagination.akhir}{" "}
+                out of {selectedData.length}
+              </p>
+              <Pagination
+                paginationNumber={paginationNumber}
+                totalPagination={totalPagination}
+                handlePage={(val) => setPaginationNumber(val)}
+              />
+              <Select
+                isSearchable={false}
+                value={articleNumber}
+                defaultValue={optionsArticleNumber[0]}
+                onChange={(e) => setArticleNumber(e)}
+                options={optionsArticleNumber}
+                className="mr-4"
+              />
+            </div>
           </div>
-        </div>
+        )}
+        {paginationData.length < 1 && (
+          <div className="flex justify-center text-center m-8 font-bold text-xl">
+            No Data Available
+          </div>
+        )}
       </div>
     </div>
   );

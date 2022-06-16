@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MenuDashboard } from "../components/MenuDashboard";
 import { SearchBar } from "../components/Searchbar";
@@ -10,6 +10,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const getRole = useSelector((state) => state.user.role);
   const router = useRouter();
+  const [query, setQuery] = useState("");
   useEffect(() => {
     dispatch(changePrimePage("dashboard"));
     if (getRole !== "admin") router.push("/");
@@ -24,10 +25,10 @@ export default function Dashboard() {
         <div className="min-h-full bg-gray-200">
           <div className="pt-2">
             <div className="m-10 p-8 bg-white">
-              <SearchBar />
+              <SearchBar setQuery={(query) => setQuery(query)} />
             </div>
             <div className="m-10 pt-4 bg-white">
-              <TableDashboard />
+              <TableDashboard querySearch={query} />
             </div>
           </div>
         </div>
